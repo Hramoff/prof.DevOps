@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="../../static/css/styleREG.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+</head>
+    <body>
+        <p align="center"><img src="../../static/images/logoreg.png"></p>
+        <div class="message">
+        {% if messages %}
+            {% for message in messages %}
+                <div>{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        </div>
+            <form method="post" action="" id="formReg" align="center">
+                {% csrf_token %}
+                {{ form.login }}
+                {{ form.email }}
+                {{ form.password }}
+                <button class="regisrt" type="submit" form="formReg" align="center">Зарегистрироваться</button>
+            </form>
+        <p class="foo" align="center"><img src="../../static/images/help.png"></p>
+    </body>
+</html>
+
