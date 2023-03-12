@@ -1,0 +1,95 @@
+---
+- hosts: servers
+  become: yes
+  gather_facts: false
+
+
+  tasks:
+
+    #_________________MODULE 1 _________________#
+
+
+  - name: 5.1 Package install
+    ansible.builtin.apt:
+      name: "{{ item }}"
+      state: present
+    loop:
+      - curl
+      - vim
+      - procs
+      - wget
+      - git
+
+  - name: Create users Administrator
+    ansible.builtin.user:
+      name: Administrator
+      password: '6bfcc4026b5f162799a6dc8305c09db9c1674ac616bd5c7422a45fbb6d0816ac163047c47a1f426f4f4c6b5b5042c671eabc4fdc7310fd5b183eef59dc274604'
+      groups: sudo
+      state: present
+      shell: /bin/bash
+      system: no
+      createhome: yes
+      home: /home/Administrator
+
+  - name: Create user Moderetor
+    ansible.builtin.user:
+      name: Moderetor
+      password: '39955fa826f4daf7e283e3062427e3744aba400ad130579cebabb95a1cb351228189f99b10d59a7c443f1d6289a848d56f3eb1d14e31daefdec4ab96a9cbe67e'
+      groups: sudo
+      state: present
+      shell: /bin/bash
+      system: no
+      createhome: yes
+      home: /home/Moderetor
+
+  - name: Create user dbAdmin
+    hosts: Database
+    ansible.builtin.user:
+      name: Moderetor
+      password: '36071265ca6ac34f87f34af716f7a62c10dd4584b343371149604e5fa067d40674d10736191b142b82d3f31853df605f06b711df8a60af36572c3a85a1d06b3d'
+      groups: sudo
+      state: present
+      shell: /bin/bash
+      system: no
+      createhome: yes
+      home: /home/Moderetor      
+
+  - name: Disable SELinux
+    ansible.posix.selinux:
+      state: disabled
+
+    #_________________MODULE 2 _________________#
+
+  - name: git clone repo
+    ansible.builtin.git:
+      repo: https://github.com/Hramoff/prof.DevOps.git
+      dest: /home/
+      separate_git_dir: /home/
+      
+  - name: copy dockerfile
+    ansible.builtin.copy:
+      src: .Dockerfile
+      dest: /home/prof.DevOps/finitastory/
+      owner: root
+      group: root
+      mode: '777'
+  
+  - name: copy docker-compose
+    ansible.builtin.copy:
+      src: .docker-compose.yaml
+      dest: /home/prof.DevOps/finitastory/
+      owner: root
+      group: root
+      mode: '777'
+
+  - name: build image on application servers
+    hosts: AppServers
+    shell: docker-compose build /home/prof.DevOps/finitastory
+
+  - name: run application
+    hosts: AppServers
+    shell: docker-compose up -d
+
+  - name: Database settings
+    hosts: Database
+    shell: docker-compose up -d  

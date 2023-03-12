@@ -1,0 +1,26 @@
+  FINITA_BD:
+    image: mysql
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD: P@ssw0rd
+      - MYSQL_DATABASE: user
+    volumes:
+      - ./user.sql:/docker-entrypoint-initdb.d
+    networks:
+      - db
+    restart: always
+    
+
+  adminer:
+    image: adminer
+    ports:
+    - 8080:8080
+    networks:
+      - db
+    restart: always
+
+
+networks:
+  db:
+    driver: bridge
