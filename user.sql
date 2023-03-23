@@ -22,7 +22,7 @@ USE `users` ;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `users`.`user` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `login` VARCHAR(45) NOT NULL,
+  `username` VARCHAR(45) NOT NULL,
   `password` VARCHAR(45) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`))
